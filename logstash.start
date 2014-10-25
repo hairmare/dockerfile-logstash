@@ -1,0 +1,16 @@
+#!/bin/sh
+# logstash.start
+#
+# apply elasticsearch config from env variables
+#
+# this gets run through openrc using the local.d facility
+
+LOGSTASH_CONFIG_FILE="/etc/logstash/conf.d/agent.conf"
+
+# rewrite config file
+sed -e "s/ES_HOST/${ES_PORT_9200_TCP_ADDR}/g" \
+    -e "s/ES_PORT/${ES_PORT_9200_TCP_PORT}/g" \
+    -i $LOGSTASH_CONFIG_FILE
+
+# restart logstash since it does not monitor its config (yet)
+/etc/init.d/logstash restart

@@ -1,0 +1,11 @@
+[Unit]
+Description=Logstash Service
+After=docker.service
+
+[Service]
+TimeoutStartSec=10
+ExecStartPre=-/usr/bin/docker kill logstash
+ExecStartPre=-/usr/bin/docker rm logstash
+ExecStartPre=/usr/bin/docker pull hairmare/logstash
+ExecStart=/usr/bin/docker run -t --name=logstash --link=elasticsearch:es -v /var/lib/docker:/var/lib/docker hairmare/logstash bash -c '/sbin/rc default && exec tail-syslog'
+ExecStop=/usr/bin/docker stop logstash
