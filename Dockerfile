@@ -24,6 +24,12 @@ ADD agent.conf /etc/logstash/conf.d/
 # rewrite config on boot
 ADD logstash.start /etc/local.d/
 RUN chmod +x /etc/local.d/logstash.start
+# setup user
+RUN groupadd -r logstash
+RUN useradd -r -g logstash -d /var/empty -c 'added by docker for logstash' -s /sbin/nologin logstash
+RUN sed -i -e 's/#LOGSTASH_USER="root:root"/LS_USER="logstash:logstash"/' /etc/conf.d/logstash
+RUN find /etc/logstash/ -type d -exec chmod +rx {} \; 
+RUN find /etc/logstash/ -type f -exec chmod +r {} \;
 
 RUN eselect news read new
 
